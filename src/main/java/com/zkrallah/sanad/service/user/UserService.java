@@ -1,0 +1,26 @@
+package com.zkrallah.sanad.service.user;
+
+import com.zkrallah.sanad.dtos.UpdateUserDto;
+import com.zkrallah.sanad.entity.User;
+
+import java.text.ParseException;
+import java.util.List;
+import java.util.Optional;
+
+public interface UserService {
+    User saveUser(User user);
+
+    void addRoleToUser(String email, String roleName);
+
+    Optional<User> getUser(String email);
+
+    User getUserById(Long id);
+
+    List<User> getUsersWithRole(String roleName);
+
+    List<User> getUsers();
+
+    User updateUser(Long userId, UpdateUserDto updateUserDto) throws ParseException;
+
+    void updateUserPhoto(Long userId, String url);
+}
