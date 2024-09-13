@@ -1,5 +1,7 @@
 package com.zkrallah.sanad.entity;
 
+import java.sql.Date;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
@@ -19,7 +21,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "experiences")
-class Experience {
+public class Experience {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +38,12 @@ class Experience {
 
     @Column(columnDefinition = "TEXT")
     private String description;
+
+    @Column(nullable = false)
+    private Date startDate;
+
+    @Column
+    private Date endDate;
 
     @JsonIgnore
     @ManyToOne
