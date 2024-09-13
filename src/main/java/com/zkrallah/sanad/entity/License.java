@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "licenses")
-class License {
+public class License {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
