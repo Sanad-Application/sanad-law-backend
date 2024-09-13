@@ -67,6 +67,10 @@ public class User implements UserDetails {
     @OrderBy("id ASC")
     private Set<Role> roles = new HashSet<>();
 
+    @JsonIgnore
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Lawyer lawyer;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles;
