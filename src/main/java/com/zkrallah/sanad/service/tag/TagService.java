@@ -10,5 +10,7 @@ public interface TagService {
 
     List<Tag> getTags();
 
+    Tag getTagByName(String name);
+
     void deleteTag(String tagName);
 }
