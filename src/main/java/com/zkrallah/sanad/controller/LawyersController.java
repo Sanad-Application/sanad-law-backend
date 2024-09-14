@@ -4,29 +4,29 @@ import static com.zkrallah.sanad.response.ApiResponse.createFailureResponse;
 import static com.zkrallah.sanad.response.ApiResponse.createSuccessResponse;
 import static org.springframework.http.HttpStatus.CREATED;
 
-import com.zkrallah.sanad.dtos.CreateExperienceDto;
-import com.zkrallah.sanad.entity.Experience;
-import com.zkrallah.sanad.service.experience.ExperienceService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.zkrallah.sanad.dtos.CreateEducationDto;
+import com.zkrallah.sanad.dtos.CreateExperienceDto;
 import com.zkrallah.sanad.dtos.CreateLawyerDto;
 import com.zkrallah.sanad.dtos.CreateLicenseDto;
+import com.zkrallah.sanad.dtos.CreateTagDto;
 import com.zkrallah.sanad.entity.Education;
+import com.zkrallah.sanad.entity.Experience;
 import com.zkrallah.sanad.entity.Lawyer;
 import com.zkrallah.sanad.entity.License;
 import com.zkrallah.sanad.response.ApiResponse;
+import com.zkrallah.sanad.response.MessageResponse;
 import com.zkrallah.sanad.service.education.EducationService;
+import com.zkrallah.sanad.service.experience.ExperienceService;
 import com.zkrallah.sanad.service.lawyer.LawyerService;
 import com.zkrallah.sanad.service.license.LicenseService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/lawyers")
@@ -38,6 +38,17 @@ public class LawyersController {
     private final LicenseService licenseService;
     private final EducationService educationService;
     private final ExperienceService experienceService;
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<Lawyer>>> getLawyers() {
+        try {
+            List<Lawyer> lawyers = lawyerService.getLawyers();
+            return ResponseEntity.ok(createSuccessResponse(lawyers));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(createFailureResponse("Could get lawyers: " + e.getMessage()));
+        }
+    }
 
     @PostMapping("/create/{userId}")
     public ResponseEntity<ApiResponse<Lawyer>> createLawyer(
@@ -96,5 +107,31 @@ public class LawyersController {
                     .body(createFailureResponse("Failed to add experience: " + e.getMessage()));
         }
 
+    }
+
+    @PatchMapping("/tag/{userId}")
+    public ResponseEntity<ApiResponse<MessageResponse>> addTag(
+            @PathVariable Long userId,
+            @RequestBody CreateTagDto createTagDto) {
+        try {
+            lawyerService.addTagToLawyer(userId, createTagDto.getName());
+            return ResponseEntity.ok(createSuccessResponse(new MessageResponse("Tag added successfully!")));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(createFailureResponse("Could not add tag: " + e.getMessage()));
+        }
+    }
+
+    @PatchMapping("/untag/{userId}")
+    public ResponseEntity<ApiResponse<MessageResponse>> removeTag(
+            @PathVariable Long userId,
+            @RequestBody CreateTagDto createTagDto) {
+        try {
+            lawyerService.removeTagFromLawyer(userId, createTagDto.getName());
+            return ResponseEntity.ok(createSuccessResponse(new MessageResponse("Tag removed successfully!")));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(createFailureResponse("Could not remove tag: " + e.getMessage()));
+        }
     }
 }
