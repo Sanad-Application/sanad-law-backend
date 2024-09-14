@@ -22,14 +22,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "tags")
-class Tag {
+public class Tag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String tag;
+    private String name;
 
     @JsonIgnore
     @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
