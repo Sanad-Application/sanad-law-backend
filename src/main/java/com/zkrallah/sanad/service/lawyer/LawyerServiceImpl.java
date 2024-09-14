@@ -1,5 +1,10 @@
 package com.zkrallah.sanad.service.lawyer;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.zkrallah.sanad.dtos.CreateLawyerDto;
 import com.zkrallah.sanad.entity.Lawyer;
 import com.zkrallah.sanad.entity.Tag;
@@ -7,12 +12,9 @@ import com.zkrallah.sanad.entity.User;
 import com.zkrallah.sanad.repository.LawyerRepository;
 import com.zkrallah.sanad.service.tag.TagService;
 import com.zkrallah.sanad.service.user.UserService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import jakarta.transaction.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -52,14 +54,15 @@ public class LawyerServiceImpl implements LawyerService {
     public void addTagToLawyer(Long userId, String tagName) {
         User user = userService.getUserById(userId);
         Lawyer lawyer = user.getLawyer();
-        log.info("Lawyer: {}", lawyer);
 
         if (lawyer == null) {
             throw new IllegalArgumentException("User is not a lawyer.");
         }
 
         Tag tag = tagService.getTagByName(tagName);
-        log.info("Tag: {}", tag);
+        if (lawyer.getTags().contains(tag)) {
+            throw new IllegalArgumentException("Tag already exists.");
+        }
 
         lawyer.getTags().add(tag);
     }
@@ -75,9 +78,10 @@ public class LawyerServiceImpl implements LawyerService {
         }
 
         Tag tag = tagService.getTagByName(tagName);
-        
-        lawyer.getTags().remove(tag);
+        if (!lawyer.getTags().contains(tag)) {
+            throw new IllegalArgumentException("Tag already doesn't exist.");
+        }
 
-        lawyerRepository.save(lawyer);
+        lawyer.getTags().remove(tag);
     }
 }

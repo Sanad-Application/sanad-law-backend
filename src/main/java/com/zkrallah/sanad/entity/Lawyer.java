@@ -1,11 +1,12 @@
 package com.zkrallah.sanad.entity;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -41,28 +42,24 @@ public class Lawyer {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "license_id", referencedColumnName = "id")
     private License license;
 
-    @OneToMany(mappedBy = "lawyer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "lawyer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @OrderBy("id ASC")
-    private Set<Education> educations = new HashSet<>();
+    private List<Education> educations = new ArrayList<>();
 
     @OneToMany(mappedBy = "lawyer", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("id ASC")
-    private Set<Experience> experiences = new HashSet<>();
+    private List<Experience> experiences = new ArrayList<>();
 
     @OneToMany(mappedBy = "lawyer", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("id ASC")
-    private Set<Rating> ratings = new HashSet<>();
+    private List<Rating> ratings = new ArrayList<>();
 
     @ManyToMany
-    @JoinTable(
-            name = "lawyer_tags",
-            joinColumns = @JoinColumn(name = "lawyer_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
+    @JoinTable(name = "lawyer_tags", joinColumns = @JoinColumn(name = "lawyer_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
     @OrderBy("id ASC")
-    private Set<Tag> tags = new HashSet<>();
+    private List<Tag> tags = new ArrayList<>();
 }

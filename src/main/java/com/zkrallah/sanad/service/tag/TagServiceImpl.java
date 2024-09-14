@@ -1,7 +1,6 @@
 package com.zkrallah.sanad.service.tag;
 
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,7 +44,7 @@ public class TagServiceImpl implements TagService {
     public void deleteTag(String tagName) {
         Tag tag = tagRepository.findByName(tagName).orElseThrow(() -> new RuntimeException("Tag not found."));
 
-        Set<Lawyer> lawyersWithTag = tag.getLawyers();
+        List<Lawyer> lawyersWithTag = tag.getLawyers();
         for (Lawyer lawyer : lawyersWithTag) {
             lawyer.getTags().remove(tag);
         }
