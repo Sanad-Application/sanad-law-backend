@@ -4,8 +4,18 @@ import static com.zkrallah.sanad.response.ApiResponse.createFailureResponse;
 import static com.zkrallah.sanad.response.ApiResponse.createSuccessResponse;
 import static org.springframework.http.HttpStatus.CREATED;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.zkrallah.sanad.dtos.CreateEducationDto;
 import com.zkrallah.sanad.dtos.CreateExperienceDto;
@@ -25,8 +35,6 @@ import com.zkrallah.sanad.service.license.LicenseService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/lawyers")
@@ -132,6 +140,33 @@ public class LawyersController {
         } catch (Exception e) {
             return ResponseEntity.badRequest()
                     .body(createFailureResponse("Could not remove tag: " + e.getMessage()));
+        }
+    }
+
+    @PutMapping("/update/license/{licenseId}")
+    public ResponseEntity<ApiResponse<License>> updateLicense(
+            @PathVariable Long licenseId,
+            @RequestBody CreateLicenseDto createLicenseDto) {
+        try {
+            License license = licenseService.updateLicense(licenseId, createLicenseDto);
+            return ResponseEntity.ok(createSuccessResponse(license));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(createFailureResponse("Could not update license: " + e.getMessage()));
+
+        }
+    }
+
+    @DeleteMapping("/delete/license/{licenseId}")
+    public ResponseEntity<ApiResponse<MessageResponse>> deleteLicense(
+            @PathVariable Long licenseId) {
+        try {
+            licenseService.deleteLicense(licenseId);
+            return ResponseEntity.ok(createSuccessResponse(new MessageResponse("License deleted successfully!")));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(createFailureResponse("Could not delete license: " + e.getMessage()));
+
         }
     }
 }

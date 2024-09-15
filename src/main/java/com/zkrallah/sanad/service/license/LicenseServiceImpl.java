@@ -55,4 +55,36 @@ public class LicenseServiceImpl implements LicenseService {
 
         return licenseRepository.save(license);
     }
+
+    @Override
+    @Transactional
+    public License updateLicense(Long licenseId, CreateLicenseDto createLicenseDto) throws ParseException {
+        License license = licenseRepository.findById(licenseId)
+                .orElseThrow(() -> new RuntimeException("Failed to get license."));
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        Date issuedAt = new Date(simpleDateFormat.parse(createLicenseDto.getIssuedAt()).getTime());
+        Date expiresAt = new Date(simpleDateFormat.parse(createLicenseDto.getExpiresAt()).getTime());
+
+        license.setNumber(createLicenseDto.getNumber());
+        license.setIssuedAt(issuedAt);
+        license.setExpiresAt(expiresAt);
+        license.setCountry(createLicenseDto.getCountry());
+
+        return license;
+    }
+
+    @Override
+    @Transactional
+    public void deleteLicense(Long licenseId) {
+        License license = licenseRepository.findById(licenseId)
+                .orElseThrow(() -> new RuntimeException("Failed to get license"));
+
+        Lawyer lawyer = license.getLawyer();
+        if (lawyer != null) {
+            lawyer.setLicense(null);
+        }
+
+        licenseRepository.delete(license);
+    }
 }
