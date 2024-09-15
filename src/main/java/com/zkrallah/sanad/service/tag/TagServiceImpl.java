@@ -57,4 +57,9 @@ public class TagServiceImpl implements TagService {
         return tagRepository.findByName(name).orElseThrow(() -> new RuntimeException("Tag not found."));
     }
 
+    @Override
+    public Tag getTagById(Long tagId) {
+        return tagRepository.findById(tagId).orElseThrow(() -> new RuntimeException("Tag not foumd."));
+    }
+
 }
