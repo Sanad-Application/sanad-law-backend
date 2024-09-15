@@ -1,7 +1,7 @@
 package com.zkrallah.sanad.config;
 
-import com.zkrallah.sanad.filter.JwtAuthenticationFilter;
-import lombok.RequiredArgsConstructor;
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -14,7 +14,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+import com.zkrallah.sanad.filter.JwtAuthenticationFilter;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
@@ -26,23 +28,22 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(req ->
-                        req.requestMatchers("/api/auth/**")
+                .authorizeHttpRequests(req -> req.requestMatchers("/api/auth/**")
                         .permitAll()
 
-                        .requestMatchers("/api/admin/**")
+                        .requestMatchers("/api/admins/**")
                         .hasAnyAuthority("ADMIN")
-                        .requestMatchers("/api/admin/**")
+                        .requestMatchers("/api/admins/**")
                         .hasAnyRole("ADMIN")
 
-                        .requestMatchers("/api/lawyer/**")
+                        .requestMatchers("/api/lawyers/**")
                         .hasAnyAuthority("LAWYER")
-                        .requestMatchers("/api/lawyer/**")
+                        .requestMatchers("/api/lawyers/**")
                         .hasAnyRole("LAWYER")
 
-                        .requestMatchers("/api/client/**")
+                        .requestMatchers("/api/clients/**")
                         .hasAnyAuthority("CLIENT")
-                        .requestMatchers("/api/client/**")
+                        .requestMatchers("/api/clients/**")
                         .hasAnyRole("CLIENT")
 
                         .anyRequest()
