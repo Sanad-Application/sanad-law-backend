@@ -10,6 +10,10 @@ public interface LawyerService {
 
     List<Lawyer> getLawyers();
 
+    List<Lawyer> getLawyersByTag(Long tagId);
+
+    Lawyer getLawyer(Long lawyerId);
+
     void addTagToLawyer(Long userId, String tagName);
 
     void removeTagFromLawyer(Long userId, String tagName);

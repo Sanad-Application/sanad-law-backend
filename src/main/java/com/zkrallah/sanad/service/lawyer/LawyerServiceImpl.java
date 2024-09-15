@@ -100,4 +100,16 @@ public class LawyerServiceImpl implements LawyerService {
 
         return lawyer;
     }
+
+    @Override
+    public List<Lawyer> getLawyersByTag(Long tagId) {
+        Tag tag = tagService.getTagById(tagId);
+
+        return tag.getLawyers();
+    }
+
+    @Override
+    public Lawyer getLawyer(Long lawyerId) {
+        return lawyerRepository.findById(lawyerId).orElseThrow(() -> new RuntimeException("Could not get lawyer."));
+    }
 }
