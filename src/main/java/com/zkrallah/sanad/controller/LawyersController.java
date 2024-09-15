@@ -4,8 +4,18 @@ import static com.zkrallah.sanad.response.ApiResponse.createFailureResponse;
 import static com.zkrallah.sanad.response.ApiResponse.createSuccessResponse;
 import static org.springframework.http.HttpStatus.CREATED;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.zkrallah.sanad.dtos.CreateEducationDto;
 import com.zkrallah.sanad.dtos.CreateExperienceDto;
@@ -25,8 +35,6 @@ import com.zkrallah.sanad.service.license.LicenseService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/lawyers")
@@ -64,6 +72,18 @@ public class LawyersController {
         }
     }
 
+    @PutMapping("/update/{userId}")
+    public ResponseEntity<ApiResponse<Lawyer>> updateLawyer(
+            @PathVariable Long userId,
+            @RequestBody CreateLawyerDto createLawyerDto) {
+        try {
+            Lawyer lawyer = lawyerService.updateLawyer(userId, createLawyerDto);
+            return ResponseEntity.ok(createSuccessResponse(lawyer));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(createFailureResponse("Could not update lawyer: " + e));
+        }
+    }
+
     @PostMapping("/license/{userId}")
     public ResponseEntity<ApiResponse<License>> createLicense(
             @PathVariable Long userId,
@@ -76,7 +96,33 @@ public class LawyersController {
             return ResponseEntity.badRequest()
                     .body(createFailureResponse("Failed to create license: " + e.getMessage()));
         }
+    }
 
+    @PutMapping("/update/license/{licenseId}")
+    public ResponseEntity<ApiResponse<License>> updateLicense(
+            @PathVariable Long licenseId,
+            @RequestBody CreateLicenseDto createLicenseDto) {
+        try {
+            License license = licenseService.updateLicense(licenseId, createLicenseDto);
+            return ResponseEntity.ok(createSuccessResponse(license));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(createFailureResponse("Could not update license: " + e.getMessage()));
+
+        }
+    }
+
+    @DeleteMapping("/delete/license/{licenseId}")
+    public ResponseEntity<ApiResponse<MessageResponse>> deleteLicense(
+            @PathVariable Long licenseId) {
+        try {
+            licenseService.deleteLicense(licenseId);
+            return ResponseEntity.ok(createSuccessResponse(new MessageResponse("License deleted successfully!")));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(createFailureResponse("Could not delete license: " + e.getMessage()));
+
+        }
     }
 
     @PostMapping("/education/{userId}")
@@ -91,7 +137,33 @@ public class LawyersController {
             return ResponseEntity.badRequest()
                     .body(createFailureResponse("Failed to add education: " + e.getMessage()));
         }
+    }
 
+    @PutMapping("/update/education/{educationId}")
+    public ResponseEntity<ApiResponse<Education>> updateEducation(
+            @PathVariable Long educationId,
+            @RequestBody CreateEducationDto createEducationDto) {
+        try {
+            Education education = educationService.updateEducation(educationId, createEducationDto);
+            return ResponseEntity.ok(createSuccessResponse(education));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(createFailureResponse("Could not update education: " + e.getMessage()));
+
+        }
+    }
+
+    @DeleteMapping("/delete/education/{educationId}")
+    public ResponseEntity<ApiResponse<MessageResponse>> deleteEducation(
+            @PathVariable Long educationId) {
+        try {
+            educationService.deleteEducation(educationId);
+            return ResponseEntity.ok(createSuccessResponse(new MessageResponse("Education deleted successfully!")));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(createFailureResponse("Could not delete education: " + e.getMessage()));
+
+        }
     }
 
     @PostMapping("/experience/{userId}")
@@ -106,7 +178,33 @@ public class LawyersController {
             return ResponseEntity.badRequest()
                     .body(createFailureResponse("Failed to add experience: " + e.getMessage()));
         }
+    }
 
+    @PutMapping("/update/experience/{experienceId}")
+    public ResponseEntity<ApiResponse<Experience>> updateExperience(
+            @PathVariable Long experienceId,
+            @RequestBody CreateExperienceDto createExperienceDto) {
+        try {
+            Experience experience = experienceService.updateExperience(experienceId, createExperienceDto);
+            return ResponseEntity.ok(createSuccessResponse(experience));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(createFailureResponse("Could not update experience: " + e.getMessage()));
+
+        }
+    }
+
+    @DeleteMapping("/delete/experience/{experienceId}")
+    public ResponseEntity<ApiResponse<MessageResponse>> deleteExperience(
+            @PathVariable Long experienceId) {
+        try {
+            experienceService.deleteExperience(experienceId);
+            return ResponseEntity.ok(createSuccessResponse(new MessageResponse("Experience deleted successfully!")));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(createFailureResponse("Could not delete experience: " + e.getMessage()));
+
+        }
     }
 
     @PatchMapping("/tag/{userId}")

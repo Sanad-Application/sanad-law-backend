@@ -7,4 +7,8 @@ import com.zkrallah.sanad.entity.Experience;
 
 public interface ExperienceService {
     Experience createExperience(Long userId, CreateExperienceDto createExperienceDto) throws ParseException;
+
+    Experience updateExperience(Long experienceId, CreateExperienceDto createExperienceDto) throws ParseException;
+
+    void deleteExperience(Long experienceId);
 }

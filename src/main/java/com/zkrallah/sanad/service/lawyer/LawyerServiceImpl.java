@@ -84,4 +84,20 @@ public class LawyerServiceImpl implements LawyerService {
 
         lawyer.getTags().remove(tag);
     }
+
+    @Override
+    @Transactional
+    public Lawyer updateLawyer(Long userId, CreateLawyerDto createLawyerDto) {
+        User user = userService.getUserById(userId);
+        Lawyer lawyer = user.getLawyer();
+
+        if (lawyer == null) {
+            throw new IllegalArgumentException("User is not a lawyer.");
+        }
+
+        lawyer.setBio(createLawyerDto.getBio());
+        lawyer.setHourlyRate(createLawyerDto.getHourlyRate());
+
+        return lawyer;
+    }
 }

@@ -52,4 +52,36 @@ public class ExperienceServiceImpl implements ExperienceService {
         return experienceRepository.save(experience);
     }
 
+    @Override
+    @Transactional
+    public Experience updateExperience(Long experienceId, CreateExperienceDto createExperienceDto)
+            throws ParseException {
+        Experience experience = experienceRepository.findById(experienceId)
+                .orElseThrow(() -> new RuntimeException("Could not get experience."));
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        Date startDate = new Date(simpleDateFormat.parse(createExperienceDto.getStartDate()).getTime());
+        Date endDate = new Date(simpleDateFormat.parse(createExperienceDto.getEndDate()).getTime());
+
+        experience.setTitle(createExperienceDto.getTitle());
+        experience.setCompany(createExperienceDto.getCompany());
+        experience.setLocation(createExperienceDto.getLocation());
+        experience.setDescription(createExperienceDto.getDescription());
+        experience.setStartDate(startDate);
+        experience.setEndDate(endDate);
+
+        return experience;
+    }
+
+    @Override
+    @Transactional
+    public void deleteExperience(Long experienceId) {
+        Experience experience = experienceRepository.findById(experienceId)
+                .orElseThrow(() -> new RuntimeException("Could not get experience."));
+
+        experience.setLawyer(null);
+
+        experienceRepository.delete(experience);
+    }
+
 }
