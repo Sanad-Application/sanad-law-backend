@@ -7,4 +7,8 @@ import com.zkrallah.sanad.entity.Education;
 
 public interface EducationService {
     Education createEducation(Long userId, CreateEducationDto createEducationDto) throws ParseException;
+
+    Education updateEducation(Long educationId, CreateEducationDto createEducationDto) throws ParseException;
+
+    void deleteEducation(Long educationId);
 }

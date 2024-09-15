@@ -47,4 +47,31 @@ public class EducationServiceImpl implements EducationService {
 
         return educationRepository.save(education);
     }
+
+    @Override
+    @Transactional
+    public Education updateEducation(Long educationId, CreateEducationDto createEducationDto) throws ParseException {
+        Education education = educationRepository.findById(educationId)
+                .orElseThrow(() -> new RuntimeException("Could not get education."));
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        Date graduation = new Date(simpleDateFormat.parse(createEducationDto.getGraduation()).getTime());
+
+        education.setTitle(createEducationDto.getTitle());
+        education.setUniversity(createEducationDto.getUniversity());
+        education.setGraduation(graduation);
+
+        return education;
+    }
+
+    @Override
+    @Transactional
+    public void deleteEducation(Long educationId) {
+        Education education = educationRepository.findById(educationId)
+                .orElseThrow(() -> new RuntimeException("Could not get education."));
+
+        education.setLawyer(null);
+
+        educationRepository.delete(education);
+    }
 }
