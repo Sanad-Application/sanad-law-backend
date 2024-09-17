@@ -232,4 +232,15 @@ public class LawyersController {
                     .body(createFailureResponse("Could not remove tag: " + e.getMessage()));
         }
     }
+
+    @PatchMapping("/toggle/{lawyerId}")
+    public ResponseEntity<ApiResponse<MessageResponse>> toggleActivity(
+            @PathVariable Long lawyerId) {
+        try {
+            lawyerService.toggleActivity(lawyerId);
+            return ResponseEntity.ok(createSuccessResponse(new MessageResponse("Status toggled succesfully!")));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(createFailureResponse("Could not toggle: " + e.getMessage()));
+        }
+    }
 }
