@@ -41,8 +41,8 @@ public class TagServiceImpl implements TagService {
 
     @Override
     @Transactional
-    public void deleteTag(String tagName) {
-        Tag tag = tagRepository.findByName(tagName).orElseThrow(() -> new RuntimeException("Tag not found."));
+    public void deleteTag(Long tagId) {
+        Tag tag = tagRepository.findById(tagId).orElseThrow(() -> new RuntimeException("Tag not found."));
 
         List<Lawyer> lawyersWithTag = tag.getLawyers();
         for (Lawyer lawyer : lawyersWithTag) {
