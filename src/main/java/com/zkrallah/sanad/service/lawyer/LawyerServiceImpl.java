@@ -112,4 +112,20 @@ public class LawyerServiceImpl implements LawyerService {
     public Lawyer getLawyer(Long lawyerId) {
         return lawyerRepository.findById(lawyerId).orElseThrow(() -> new RuntimeException("Could not get lawyer."));
     }
+
+    @Override
+    @Transactional
+    public void toggleActivity(Long lawyerId) {
+        Lawyer lawyer = lawyerRepository.findById(lawyerId)
+                .orElseThrow(() -> new RuntimeException("Could not get lawyer."));
+
+        boolean isActive = lawyer.isActive();
+        lawyer.setActive(!isActive);
+    }
+
+    @Override
+    public List<Lawyer> getActiveLawyers() {
+        return lawyerRepository.findByIsActiveTrue()
+                .orElseThrow(() -> new RuntimeException("Could not get lawyers."));
+    }
 }

@@ -47,6 +47,16 @@ public class ClientsController {
         }
     }
 
+    @GetMapping("lawyers/active")
+    public ResponseEntity<ApiResponse<List<Lawyer>>> getActiveLawyers() {
+        try {
+            List<Lawyer> lawyers = lawyerService.getActiveLawyers();
+            return ResponseEntity.ok(createSuccessResponse(lawyers));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(createFailureResponse("Could not get lawyers: " + e.getMessage()));
+        }
+    }
+
     @GetMapping("/lawyer/{lawyerId}")
     public ResponseEntity<ApiResponse<Lawyer>> getLawyer(
         @PathVariable Long lawyerId

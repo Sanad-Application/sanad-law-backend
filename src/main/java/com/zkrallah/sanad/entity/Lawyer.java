@@ -38,6 +38,9 @@ public class Lawyer {
     @Column
     private double hourlyRate = 0.0;
 
+    @Column
+    private boolean isActive = false;
+
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;

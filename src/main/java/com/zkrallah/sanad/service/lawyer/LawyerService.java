@@ -12,6 +12,8 @@ public interface LawyerService {
 
     List<Lawyer> getLawyersByTag(Long tagId);
 
+    List<Lawyer> getActiveLawyers();
+
     Lawyer getLawyer(Long lawyerId);
 
     void addTagToLawyer(Long userId, String tagName);
@@ -19,4 +21,6 @@ public interface LawyerService {
     void removeTagFromLawyer(Long userId, String tagName);
 
     Lawyer updateLawyer(Long userId, CreateLawyerDto createLawyerDto);
+
+    void toggleActivity(Long lawyerId);
 }
