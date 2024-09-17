@@ -2,6 +2,8 @@ package com.zkrallah.sanad.service.request;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,5 +50,33 @@ public class RequestServiceImpl implements RequestService {
         request.setUser(user);
 
         return requestRepository.save(request);
+    }
+
+    @Override
+    public List<Request> getRequests(Long userId, int type) {
+        User user = userService.getUserById(userId);
+
+        return user.getRequests().stream()
+                .filter(it -> switch (type) {
+                    case 1 -> it.getStatus().equals("WAITING");
+                    case 2 -> it.getStatus().equals("APPROVED");
+                    case 3 -> it.getStatus().equals("REJECTED");
+                    default -> true;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Request> getClientRequests(Long lawyerId, int type) {
+        Lawyer lawyer = lawyerService.getLawyer(lawyerId);
+
+        return lawyer.getClientRequests().stream()
+                .filter(it -> switch (type) {
+                    case 1 -> it.getStatus().equals("WAITING");
+                    case 2 -> it.getStatus().equals("APPROVED");
+                    case 3 -> it.getStatus().equals("REJECTED");
+                    default -> true;
+                })
+                .collect(Collectors.toList());
     }
 }
