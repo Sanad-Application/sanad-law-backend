@@ -259,4 +259,28 @@ public class LawyersController {
             return ResponseEntity.badRequest().body(createFailureResponse("Could not get requests: " + e.getMessage()));
         }
     }
+
+    @GetMapping("/request/{requestId}")
+    public ResponseEntity<ApiResponse<Request>> getRequest(
+            @PathVariable Long requestId) {
+        try {
+            Request request = requestService.getRequest(requestId);
+            return ResponseEntity.ok(createSuccessResponse(request));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(createFailureResponse("Could not get request: " + e.getMessage()));
+        }
+    }
+
+    @PatchMapping("/request/{requestId}")
+    public ResponseEntity<ApiResponse<Request>> updateRequestStatus(
+            @PathVariable Long requestId,
+            @RequestParam int type) {
+        try {
+            Request request = requestService.updateRequestStatus(requestId, type);
+            return ResponseEntity.ok(createSuccessResponse(request));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(createFailureResponse("Could not update request status: " + e.getMessage()));
+        }
+    }
 }

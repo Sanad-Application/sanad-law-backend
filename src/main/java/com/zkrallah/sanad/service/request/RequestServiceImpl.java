@@ -53,6 +53,25 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
+    public Request getRequest(Long requestId) {
+        return requestRepository.findById(requestId).orElseThrow(() -> new RuntimeException("Could not get request."));
+    }
+
+    @Override
+    @Transactional
+    public Request updateRequestStatus(Long requestId, int type) {
+        Request request = requestRepository.findById(requestId)
+                .orElseThrow(() -> new RuntimeException("Could not get request."));
+        switch (type) {
+            case 1 -> request.setStatus("APPROVED");
+            case 2 -> request.setStatus("REJECTED");
+            default -> throw new IllegalArgumentException("Not a valid type");
+        }
+
+        return request;
+    }
+
+    @Override
     public List<Request> getRequests(Long userId, int type) {
         User user = userService.getUserById(userId);
 
