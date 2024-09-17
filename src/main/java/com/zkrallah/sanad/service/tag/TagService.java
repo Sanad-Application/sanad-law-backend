@@ -14,5 +14,5 @@ public interface TagService {
 
     Tag getTagById(Long tagId);
 
-    void deleteTag(String tagName);
+    void deleteTag(Long tagId);
 }
