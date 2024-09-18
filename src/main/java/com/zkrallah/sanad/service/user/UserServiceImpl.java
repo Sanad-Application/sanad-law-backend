@@ -4,6 +4,7 @@ import com.zkrallah.sanad.dtos.UpdateUserDto;
 import com.zkrallah.sanad.entity.Role;
 import com.zkrallah.sanad.entity.User;
 import com.zkrallah.sanad.repository.UserRepository;
+import com.zkrallah.sanad.service.jwt.JwtService;
 import com.zkrallah.sanad.service.role.RoleService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final RoleService roleService;
+    private final JwtService jwtService;
 
     @Override
     public User saveUser(User user) {
@@ -48,6 +50,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUserByJwt(String authHeader) {
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            final String token = authHeader.substring(7);
+            if (jwtService.validateToken(token)) {
+                String email = jwtService.getEmailFromToken(token);
+                return userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+            }
+            throw new RuntimeException("Token is not valid");
+        }
+        throw new RuntimeException("Token is invalid");
+    }
+
+    @Override
     public User getUserById(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
     }
@@ -65,8 +80,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User updateUser(Long userId, UpdateUserDto updateUserDto) throws ParseException {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+    public User updateUser(String authHeader, UpdateUserDto updateUserDto) throws ParseException {
+        User user = getUserByJwt(authHeader);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
         user.setFirstName(updateUserDto.getFirstName());
@@ -78,10 +93,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updateUserPhoto(Long userId, String url) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+    public void updateUserPhoto(String authHeader, String url) {
+        User user = getUserByJwt(authHeader);
 
         user.setImageUrl(url);
-        log.info("Updated on " + Thread.currentThread().getName() + " for userId " + userId.toString());
+        log.info("Updated on {}", Thread.currentThread().getName());
     }
 }

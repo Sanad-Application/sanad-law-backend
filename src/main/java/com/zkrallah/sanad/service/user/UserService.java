@@ -14,13 +14,15 @@ public interface UserService {
 
     Optional<User> getUser(String email);
 
+    User getUserByJwt(String authHeader);
+
     User getUserById(Long id);
 
     List<User> getUsersWithRole(String roleName);
 
     List<User> getUsers();
 
-    User updateUser(Long userId, UpdateUserDto updateUserDto) throws ParseException;
+    User updateUser(String authHeader, UpdateUserDto updateUserDto) throws ParseException;
 
-    void updateUserPhoto(Long userId, String url);
+    void updateUserPhoto(String authHeader, String url);
 }

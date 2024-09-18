@@ -27,8 +27,8 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     @Override
     @Transactional
-    public Experience createExperience(Long userId, CreateExperienceDto createExperienceDto) throws ParseException {
-        User user = userService.getUserById(userId);
+    public Experience createExperience(String authHeader, CreateExperienceDto createExperienceDto) throws ParseException {
+        User user = userService.getUserByJwt(authHeader);
         Lawyer lawyer = user.getLawyer();
 
         if (lawyer == null) {

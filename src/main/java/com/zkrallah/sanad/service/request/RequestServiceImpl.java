@@ -30,8 +30,8 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional
-    public Request createRequest(Long userId, Long lawyerId, CreateRequestDto createRequestDto) {
-        User user = userService.getUserById(userId);
+    public Request createRequest(String authHeader, Long lawyerId, CreateRequestDto createRequestDto) {
+        User user = userService.getUserByJwt(authHeader);
         Lawyer lawyer = lawyerService.getLawyer(lawyerId);
 
         Request request = new Request();
@@ -72,8 +72,8 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public List<Request> getRequests(Long userId, int type) {
-        User user = userService.getUserById(userId);
+    public List<Request> getRequests(String authHeader, int type) {
+        User user = userService.getUserByJwt(authHeader);
 
         return user.getRequests().stream()
                 .filter(it -> switch (type) {
@@ -86,8 +86,13 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public List<Request> getClientRequests(Long lawyerId, int type) {
-        Lawyer lawyer = lawyerService.getLawyer(lawyerId);
+    public List<Request> getClientRequests(String authHeader, int type) {
+        User user = userService.getUserByJwt(authHeader);
+        Lawyer lawyer = user.getLawyer();
+
+        if (lawyer == null) {
+            throw new IllegalArgumentException("User is not a lawyer");
+        }
 
         return lawyer.getClientRequests().stream()
                 .filter(it -> switch (type) {
