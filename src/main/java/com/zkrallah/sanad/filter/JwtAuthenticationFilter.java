@@ -1,15 +1,9 @@
 package com.zkrallah.sanad.filter;
 
-import com.zkrallah.sanad.entity.User;
-import com.zkrallah.sanad.service.jwt.JwtService;
-import io.jsonwebtoken.ExpiredJwtException;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,8 +13,19 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zkrallah.sanad.entity.User;
+import com.zkrallah.sanad.response.ApiResponse;
+import com.zkrallah.sanad.service.jwt.JwtService;
+
+import io.jsonwebtoken.ExpiredJwtException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @RequiredArgsConstructor
@@ -28,17 +33,27 @@ import java.io.PrintWriter;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private static final List<String> EXCLUDED_PATHS = List.of("/api/auth/**");
 
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
-            @NonNull FilterChain filterChain
-    ) throws ServletException, IOException {
+            @NonNull FilterChain filterChain) throws ServletException, IOException {
+
+        String requestPath = request.getRequestURI();
+
+        if (isExcludedPath(requestPath)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         final String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
+            sendErrorResponse(response, HttpServletResponse.SC_FORBIDDEN, "Authorization header missing or invalid");
             return;
         }
 
@@ -54,9 +69,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 if (jwtService.validateToken(jwt)) {
                     User user = (User) userDetails;
                     if (!user.isEmailVerified()) {
-                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                        PrintWriter out = response.getWriter();
-                        out.println("{\n\"message\":\"User email is not verified.\"\n}");
+                        sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "User email is not verified");
                         log.error("User Email Is Not Verified!");
                         return;
                     }
@@ -64,8 +77,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails,
                             null,
-                            userDetails.getAuthorities()
-                    );
+                            userDetails.getAuthorities());
 
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
@@ -74,16 +86,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             filterChain.doFilter(request, response);
         } catch (ExpiredJwtException e) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            PrintWriter out = response.getWriter();
-            out.println("{\n\"message\":\"" + e.getMessage() + "\"\n}");
-            log.error("Token Expired: " + e.getMessage());
+            sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Token expired: " + e.getMessage());
+            log.error("Token Expired: {}", e.getMessage());
         } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            PrintWriter out = response.getWriter();
-            out.println("{\n\"message\":\"" + e.getMessage() + "\"\n}");
-            log.error("JwtAuthenticationFilterError" + e.getMessage());
-            e.printStackTrace();
+            sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED,
+                    "JWT authentication failed: " + e.getMessage());
+            log.error("JwtAuthenticationFilterError: {}", e.getMessage());
         }
+    }
+
+    private void sendErrorResponse(HttpServletResponse response, int status, String message) throws IOException {
+        response.setStatus(status);
+        response.setContentType("application/json");
+
+        ApiResponse<Object> apiResponse = ApiResponse.createFailureResponse(message);
+        PrintWriter out = response.getWriter();
+        out.println(objectMapper.writeValueAsString(apiResponse)); // Serializing the ApiResponse
+        out.flush();
+    }
+
+    private boolean isExcludedPath(String requestPath) {
+        return EXCLUDED_PATHS.stream().anyMatch(path -> requestPath.startsWith(path.replace("**", "")));
     }
 }
