@@ -61,6 +61,10 @@ public class Lawyer {
     @OrderBy("id ASC")
     private List<Rating> ratings = new ArrayList<>();
 
+    @OneToMany(mappedBy = "lawyer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("id ASC")
+    private List<Request> clientRequests = new ArrayList<>();
+
     @ManyToMany
     @JoinTable(name = "lawyer_tags", joinColumns = @JoinColumn(name = "lawyer_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
     @OrderBy("id ASC")

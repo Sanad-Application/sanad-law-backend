@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zkrallah.sanad.dtos.CreateEducationDto;
@@ -26,12 +27,14 @@ import com.zkrallah.sanad.entity.Education;
 import com.zkrallah.sanad.entity.Experience;
 import com.zkrallah.sanad.entity.Lawyer;
 import com.zkrallah.sanad.entity.License;
+import com.zkrallah.sanad.entity.Request;
 import com.zkrallah.sanad.response.ApiResponse;
 import com.zkrallah.sanad.response.MessageResponse;
 import com.zkrallah.sanad.service.education.EducationService;
 import com.zkrallah.sanad.service.experience.ExperienceService;
 import com.zkrallah.sanad.service.lawyer.LawyerService;
 import com.zkrallah.sanad.service.license.LicenseService;
+import com.zkrallah.sanad.service.request.RequestService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +49,7 @@ public class LawyersController {
     private final LicenseService licenseService;
     private final EducationService educationService;
     private final ExperienceService experienceService;
+    private final RequestService requestService;
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<Lawyer>>> getLawyers() {
@@ -241,6 +245,42 @@ public class LawyersController {
             return ResponseEntity.ok(createSuccessResponse(new MessageResponse("Status toggled succesfully!")));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(createFailureResponse("Could not toggle: " + e.getMessage()));
+        }
+    }
+
+    @GetMapping("/requests")
+    public ResponseEntity<ApiResponse<List<Request>>> getClientRequests(
+            @RequestParam Long lawyerId,
+            @RequestParam int type) {
+        try {
+            List<Request> requests = requestService.getClientRequests(lawyerId, type);
+            return ResponseEntity.ok(createSuccessResponse(requests));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(createFailureResponse("Could not get requests: " + e.getMessage()));
+        }
+    }
+
+    @GetMapping("/request/{requestId}")
+    public ResponseEntity<ApiResponse<Request>> getRequest(
+            @PathVariable Long requestId) {
+        try {
+            Request request = requestService.getRequest(requestId);
+            return ResponseEntity.ok(createSuccessResponse(request));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(createFailureResponse("Could not get request: " + e.getMessage()));
+        }
+    }
+
+    @PatchMapping("/request")
+    public ResponseEntity<ApiResponse<Request>> updateRequestStatus(
+            @RequestParam Long requestId,
+            @RequestParam int type) {
+        try {
+            Request request = requestService.updateRequestStatus(requestId, type);
+            return ResponseEntity.ok(createSuccessResponse(request));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(createFailureResponse("Could not update request status: " + e.getMessage()));
         }
     }
 }
