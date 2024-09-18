@@ -271,9 +271,9 @@ public class LawyersController {
         }
     }
 
-    @PatchMapping("/request/{requestId}")
+    @PatchMapping("/request")
     public ResponseEntity<ApiResponse<Request>> updateRequestStatus(
-            @PathVariable Long requestId,
+            @RequestParam Long requestId,
             @RequestParam int type) {
         try {
             Request request = requestService.updateRequestStatus(requestId, type);
