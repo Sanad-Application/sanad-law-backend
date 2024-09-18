@@ -14,5 +14,5 @@ public interface RequestService {
 
     List<Request> getRequests(Long userId, int type);
 
-    List<Request> getClientRequests(Long lawyerId, int type);
+    List<Request> getClientRequests(String authHeader, int type);
 }

@@ -6,7 +6,7 @@ import com.zkrallah.sanad.dtos.CreateLicenseDto;
 import com.zkrallah.sanad.entity.License;
 
 public interface LicenseService {
-    License createLicense(Long userId, CreateLicenseDto createLicenseDto) throws ParseException;
+    License createLicense(String authHeader, CreateLicenseDto createLicenseDto) throws ParseException;
 
     License updateLicense(Long licenseId, CreateLicenseDto createLicenseDto) throws ParseException;
 

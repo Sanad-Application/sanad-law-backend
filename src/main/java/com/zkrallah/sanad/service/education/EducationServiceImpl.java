@@ -27,8 +27,8 @@ public class EducationServiceImpl implements EducationService {
 
     @Override
     @Transactional
-    public Education createEducation(Long userId, CreateEducationDto createEducationDto) throws ParseException {
-        User user = userService.getUserById(userId);
+    public Education createEducation(String authHeader, CreateEducationDto createEducationDto) throws ParseException {
+        User user = userService.getUserByJwt(authHeader);
         Lawyer lawyer = user.getLawyer();
 
         if (lawyer == null) {

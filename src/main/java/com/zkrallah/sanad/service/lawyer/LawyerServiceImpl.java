@@ -27,8 +27,8 @@ public class LawyerServiceImpl implements LawyerService {
 
     @Override
     @Transactional
-    public Lawyer createLawyer(Long userId, CreateLawyerDto createLawyerDto) {
-        User user = userService.getUserById(userId);
+    public Lawyer createLawyer(String authHeader, CreateLawyerDto createLawyerDto) {
+        User user = userService.getUserByJwt(authHeader);
 
         if (user.getLawyer() != null) {
             throw new IllegalArgumentException("User already is a lawyer.");
@@ -51,8 +51,8 @@ public class LawyerServiceImpl implements LawyerService {
 
     @Override
     @Transactional
-    public void addTagToLawyer(Long userId, String tagName) {
-        User user = userService.getUserById(userId);
+    public void addTagToLawyer(String authHeader, String tagName) {
+        User user = userService.getUserByJwt(authHeader);
         Lawyer lawyer = user.getLawyer();
 
         if (lawyer == null) {
@@ -69,8 +69,8 @@ public class LawyerServiceImpl implements LawyerService {
 
     @Override
     @Transactional
-    public void removeTagFromLawyer(Long userId, String tagName) {
-        User user = userService.getUserById(userId);
+    public void removeTagFromLawyer(String authHeader, String tagName) {
+        User user = userService.getUserByJwt(authHeader);
         Lawyer lawyer = user.getLawyer();
 
         if (lawyer == null) {
@@ -87,8 +87,8 @@ public class LawyerServiceImpl implements LawyerService {
 
     @Override
     @Transactional
-    public Lawyer updateLawyer(Long userId, CreateLawyerDto createLawyerDto) {
-        User user = userService.getUserById(userId);
+    public Lawyer updateLawyer(String authHeader, CreateLawyerDto createLawyerDto) {
+        User user = userService.getUserByJwt(authHeader);
         Lawyer lawyer = user.getLawyer();
 
         if (lawyer == null) {
@@ -115,9 +115,13 @@ public class LawyerServiceImpl implements LawyerService {
 
     @Override
     @Transactional
-    public void toggleActivity(Long lawyerId) {
-        Lawyer lawyer = lawyerRepository.findById(lawyerId)
-                .orElseThrow(() -> new RuntimeException("Could not get lawyer."));
+    public void toggleActivity(String authHeader) {
+        User user = userService.getUserByJwt(authHeader);
+        Lawyer lawyer = user.getLawyer();
+
+        if (lawyer == null) {
+            throw new IllegalArgumentException("User is not a lawyer");
+        }
 
         boolean isActive = lawyer.isActive();
         lawyer.setActive(!isActive);

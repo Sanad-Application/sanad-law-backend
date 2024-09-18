@@ -4,6 +4,7 @@ import com.zkrallah.sanad.dtos.UpdateUserDto;
 import com.zkrallah.sanad.entity.Role;
 import com.zkrallah.sanad.entity.User;
 import com.zkrallah.sanad.repository.UserRepository;
+import com.zkrallah.sanad.service.jwt.JwtService;
 import com.zkrallah.sanad.service.role.RoleService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final RoleService roleService;
+    private final JwtService jwtService;
 
     @Override
     public User saveUser(User user) {
@@ -45,6 +47,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> getUser(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public User getUserByJwt(String authHeader) {
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            final String token = authHeader.substring(7);
+            if (jwtService.validateToken(token)) {
+                String email = jwtService.getEmailFromToken(token);
+                return userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+            }
+            throw new RuntimeException("Token is not valid");
+        }
+        throw new RuntimeException("Token is invalid");
     }
 
     @Override

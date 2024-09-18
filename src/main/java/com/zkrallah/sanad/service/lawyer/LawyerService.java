@@ -6,7 +6,7 @@ import com.zkrallah.sanad.dtos.CreateLawyerDto;
 import com.zkrallah.sanad.entity.Lawyer;
 
 public interface LawyerService {
-    Lawyer createLawyer(Long userId, CreateLawyerDto createLawyerDto);
+    Lawyer createLawyer(String authHeader, CreateLawyerDto createLawyerDto);
 
     List<Lawyer> getLawyers();
 
@@ -16,11 +16,11 @@ public interface LawyerService {
 
     Lawyer getLawyer(Long lawyerId);
 
-    void addTagToLawyer(Long userId, String tagName);
+    void addTagToLawyer(String authHeader, String tagName);
 
-    void removeTagFromLawyer(Long userId, String tagName);
+    void removeTagFromLawyer(String authHeader, String tagName);
 
-    Lawyer updateLawyer(Long userId, CreateLawyerDto createLawyerDto);
+    Lawyer updateLawyer(String authHeader, CreateLawyerDto createLawyerDto);
 
-    void toggleActivity(Long lawyerId);
+    void toggleActivity(String authHeader);
 }

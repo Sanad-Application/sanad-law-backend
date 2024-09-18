@@ -27,8 +27,8 @@ public class LicenseServiceImpl implements LicenseService {
 
     @Override
     @Transactional
-    public License createLicense(Long userId, CreateLicenseDto createLicenseDto) throws ParseException {
-        User user = userService.getUserById(userId);
+    public License createLicense(String authHeader, CreateLicenseDto createLicenseDto) throws ParseException {
+        User user = userService.getUserByJwt(authHeader);
         Lawyer lawyer = user.getLawyer();
         if (lawyer == null) {
             throw new IllegalArgumentException("User is not a lawyer.");

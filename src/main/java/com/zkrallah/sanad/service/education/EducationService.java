@@ -6,7 +6,7 @@ import com.zkrallah.sanad.dtos.CreateEducationDto;
 import com.zkrallah.sanad.entity.Education;
 
 public interface EducationService {
-    Education createEducation(Long userId, CreateEducationDto createEducationDto) throws ParseException;
+    Education createEducation(String authHeader, CreateEducationDto createEducationDto) throws ParseException;
 
     Education updateEducation(Long educationId, CreateEducationDto createEducationDto) throws ParseException;
 

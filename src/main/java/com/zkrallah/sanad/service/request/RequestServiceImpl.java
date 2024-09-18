@@ -86,8 +86,13 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public List<Request> getClientRequests(Long lawyerId, int type) {
-        Lawyer lawyer = lawyerService.getLawyer(lawyerId);
+    public List<Request> getClientRequests(String authHeader, int type) {
+        User user = userService.getUserByJwt(authHeader);
+        Lawyer lawyer = user.getLawyer();
+
+        if (lawyer == null) {
+            throw new IllegalArgumentException("User is not a lawyer");
+        }
 
         return lawyer.getClientRequests().stream()
                 .filter(it -> switch (type) {

@@ -14,6 +14,8 @@ public interface UserService {
 
     Optional<User> getUser(String email);
 
+    User getUserByJwt(String authHeader);
+
     User getUserById(Long id);
 
     List<User> getUsersWithRole(String roleName);

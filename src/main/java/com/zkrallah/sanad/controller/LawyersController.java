@@ -7,16 +7,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.zkrallah.sanad.dtos.CreateEducationDto;
 import com.zkrallah.sanad.dtos.CreateExperienceDto;
@@ -62,12 +53,12 @@ public class LawyersController {
         }
     }
 
-    @PostMapping("/create/{userId}")
+    @PostMapping("/create")
     public ResponseEntity<ApiResponse<Lawyer>> createLawyer(
-            @PathVariable Long userId,
+            @RequestHeader("Authorization") String authHeader,
             @RequestBody CreateLawyerDto createLawyerDto) {
         try {
-            Lawyer lawyer = lawyerService.createLawyer(userId, createLawyerDto);
+            Lawyer lawyer = lawyerService.createLawyer(authHeader, createLawyerDto);
             return ResponseEntity.status(CREATED)
                     .body(createSuccessResponse(lawyer));
         } catch (Exception e) {
@@ -76,24 +67,24 @@ public class LawyersController {
         }
     }
 
-    @PutMapping("/update/{userId}")
+    @PutMapping("/update")
     public ResponseEntity<ApiResponse<Lawyer>> updateLawyer(
-            @PathVariable Long userId,
+            @RequestHeader("Authorization") String authHeader,
             @RequestBody CreateLawyerDto createLawyerDto) {
         try {
-            Lawyer lawyer = lawyerService.updateLawyer(userId, createLawyerDto);
+            Lawyer lawyer = lawyerService.updateLawyer(authHeader, createLawyerDto);
             return ResponseEntity.ok(createSuccessResponse(lawyer));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(createFailureResponse("Could not update lawyer: " + e));
         }
     }
 
-    @PostMapping("/license/{userId}")
+    @PostMapping("/license")
     public ResponseEntity<ApiResponse<License>> createLicense(
-            @PathVariable Long userId,
+            @RequestHeader("Authorization") String authHeader,
             @RequestBody CreateLicenseDto createLicenseDto) {
         try {
-            License license = licenseService.createLicense(userId, createLicenseDto);
+            License license = licenseService.createLicense(authHeader, createLicenseDto);
             return ResponseEntity.status(CREATED)
                     .body(createSuccessResponse(license));
         } catch (Exception e) {
@@ -129,12 +120,12 @@ public class LawyersController {
         }
     }
 
-    @PostMapping("/education/{userId}")
+    @PostMapping("/education")
     public ResponseEntity<ApiResponse<Education>> createEducation(
-            @PathVariable Long userId,
+            @RequestHeader("Authorization") String authHeader,
             @RequestBody CreateEducationDto createEducationDto) {
         try {
-            Education education = educationService.createEducation(userId, createEducationDto);
+            Education education = educationService.createEducation(authHeader, createEducationDto);
             return ResponseEntity.status(CREATED)
                     .body(createSuccessResponse(education));
         } catch (Exception e) {
@@ -170,12 +161,12 @@ public class LawyersController {
         }
     }
 
-    @PostMapping("/experience/{userId}")
+    @PostMapping("/experience")
     public ResponseEntity<ApiResponse<Experience>> createExperience(
-            @PathVariable Long userId,
+            @RequestHeader("Authorization") String authHeader,
             @RequestBody CreateExperienceDto createExperienceDto) {
         try {
-            Experience experience = experienceService.createExperience(userId, createExperienceDto);
+            Experience experience = experienceService.createExperience(authHeader, createExperienceDto);
             return ResponseEntity.status(CREATED)
                     .body(createSuccessResponse(experience));
         } catch (Exception e) {
@@ -211,12 +202,12 @@ public class LawyersController {
         }
     }
 
-    @PatchMapping("/tag/{userId}")
+    @PatchMapping("/tag")
     public ResponseEntity<ApiResponse<MessageResponse>> addTag(
-            @PathVariable Long userId,
+            @RequestHeader("Authorization") String authHeader,
             @RequestBody CreateTagDto createTagDto) {
         try {
-            lawyerService.addTagToLawyer(userId, createTagDto.getName());
+            lawyerService.addTagToLawyer(authHeader, createTagDto.getName());
             return ResponseEntity.ok(createSuccessResponse(new MessageResponse("Tag added successfully!")));
         } catch (Exception e) {
             return ResponseEntity.badRequest()
@@ -224,12 +215,12 @@ public class LawyersController {
         }
     }
 
-    @PatchMapping("/untag/{userId}")
+    @PatchMapping("/untag")
     public ResponseEntity<ApiResponse<MessageResponse>> removeTag(
-            @PathVariable Long userId,
+            @RequestHeader("Authorization") String authHeader,
             @RequestBody CreateTagDto createTagDto) {
         try {
-            lawyerService.removeTagFromLawyer(userId, createTagDto.getName());
+            lawyerService.removeTagFromLawyer(authHeader, createTagDto.getName());
             return ResponseEntity.ok(createSuccessResponse(new MessageResponse("Tag removed successfully!")));
         } catch (Exception e) {
             return ResponseEntity.badRequest()
@@ -237,11 +228,11 @@ public class LawyersController {
         }
     }
 
-    @PatchMapping("/toggle/{lawyerId}")
+    @PatchMapping("/toggle")
     public ResponseEntity<ApiResponse<MessageResponse>> toggleActivity(
-            @PathVariable Long lawyerId) {
+            @RequestHeader("Authorization") String authHeader) {
         try {
-            lawyerService.toggleActivity(lawyerId);
+            lawyerService.toggleActivity(authHeader);
             return ResponseEntity.ok(createSuccessResponse(new MessageResponse("Status toggled succesfully!")));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(createFailureResponse("Could not toggle: " + e.getMessage()));
@@ -250,10 +241,10 @@ public class LawyersController {
 
     @GetMapping("/requests")
     public ResponseEntity<ApiResponse<List<Request>>> getClientRequests(
-            @RequestParam Long lawyerId,
+            @RequestHeader("Authorization") String authHeader,
             @RequestParam int type) {
         try {
-            List<Request> requests = requestService.getClientRequests(lawyerId, type);
+            List<Request> requests = requestService.getClientRequests(authHeader, type);
             return ResponseEntity.ok(createSuccessResponse(requests));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(createFailureResponse("Could not get requests: " + e.getMessage()));
