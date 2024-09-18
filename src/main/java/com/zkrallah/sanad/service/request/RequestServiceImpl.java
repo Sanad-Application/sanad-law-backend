@@ -30,8 +30,8 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional
-    public Request createRequest(Long userId, Long lawyerId, CreateRequestDto createRequestDto) {
-        User user = userService.getUserById(userId);
+    public Request createRequest(String authHeader, Long lawyerId, CreateRequestDto createRequestDto) {
+        User user = userService.getUserByJwt(authHeader);
         Lawyer lawyer = lawyerService.getLawyer(lawyerId);
 
         Request request = new Request();
@@ -72,8 +72,8 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public List<Request> getRequests(Long userId, int type) {
-        User user = userService.getUserById(userId);
+    public List<Request> getRequests(String authHeader, int type) {
+        User user = userService.getUserByJwt(authHeader);
 
         return user.getRequests().stream()
                 .filter(it -> switch (type) {

@@ -74,9 +74,9 @@ public class StorageServiceImpl implements StorageService {
 
     @Async
     @Override
-    public CompletableFuture<String> upload(MultipartFile multipartFile, Long userId) {
+    public CompletableFuture<String> upload(MultipartFile multipartFile, String authHeader) {
         try {
-            log.info("Uploading on " + Thread.currentThread().getName() + " for userId " + userId.toString());
+            log.info("Uploading on {}", Thread.currentThread().getName());
             String fileName = multipartFile.getOriginalFilename();
             if (fileName == null) {
                 throw new IllegalArgumentException("File name is null");
@@ -89,7 +89,7 @@ public class StorageServiceImpl implements StorageService {
                 log.warn("Failed to delete temporary file: {}", file.getName());
             }
 
-            userService.updateUserPhoto(userId, url);
+            userService.updateUserPhoto(authHeader, url);
 
             return CompletableFuture.completedFuture(url);
         } catch (IOException e) {

@@ -22,7 +22,7 @@ public interface UserService {
 
     List<User> getUsers();
 
-    User updateUser(Long userId, UpdateUserDto updateUserDto) throws ParseException;
+    User updateUser(String authHeader, UpdateUserDto updateUserDto) throws ParseException;
 
-    void updateUserPhoto(Long userId, String url);
+    void updateUserPhoto(String authHeader, String url);
 }

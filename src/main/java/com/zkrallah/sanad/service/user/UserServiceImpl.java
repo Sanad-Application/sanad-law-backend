@@ -80,8 +80,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User updateUser(Long userId, UpdateUserDto updateUserDto) throws ParseException {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+    public User updateUser(String authHeader, UpdateUserDto updateUserDto) throws ParseException {
+        User user = getUserByJwt(authHeader);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
         user.setFirstName(updateUserDto.getFirstName());
@@ -93,10 +93,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updateUserPhoto(Long userId, String url) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+    public void updateUserPhoto(String authHeader, String url) {
+        User user = getUserByJwt(authHeader);
 
         user.setImageUrl(url);
-        log.info("Updated on " + Thread.currentThread().getName() + " for userId " + userId.toString());
+        log.info("Updated on {}", Thread.currentThread().getName());
     }
 }

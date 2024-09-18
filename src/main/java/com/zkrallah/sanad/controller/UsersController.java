@@ -6,14 +6,7 @@ import static com.zkrallah.sanad.response.ApiResponse.createSuccessResponse;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.zkrallah.sanad.dtos.UpdateUserDto;
@@ -51,12 +44,12 @@ public class UsersController {
         }
     }
 
-    @PatchMapping("/update-user/{userId}")
+    @PatchMapping("/update-user")
     public ResponseEntity<ApiResponse<User>> updateUser(
-            @PathVariable Long userId,
+            @RequestHeader("Authorization") String authHeader,
             @RequestBody UpdateUserDto updateUser) {
         try {
-            User updatedUser = userService.updateUser(userId, updateUser);
+            User updatedUser = userService.updateUser(authHeader, updateUser);
             return ResponseEntity.ok(createSuccessResponse(updatedUser));
         } catch (Exception e) {
             return ResponseEntity.badRequest()
@@ -64,15 +57,12 @@ public class UsersController {
         }
     }
 
-    @PostMapping("/{userId}/upload-image")
+    @PostMapping("/upload-image")
     public ResponseEntity<ApiResponse<MessageResponse>> upload(
             @RequestParam("file") MultipartFile multipartFile,
-            @PathVariable Long userId) {
+            @RequestHeader("Authorization") String authHeader) {
         try {
-            log.info("Receiving request on {} for userId {}", Thread.currentThread().getName(), userId.toString());
-            String url = storageService.upload(multipartFile, userId).get();
-            log.info("Responding on {} for userId {}", Thread.currentThread().getName(), userId);
-
+            String url = storageService.upload(multipartFile, authHeader).get();
             return ResponseEntity.ok(createSuccessResponse(new MessageResponse(url)));
         } catch (Exception e) {
             return ResponseEntity.badRequest()

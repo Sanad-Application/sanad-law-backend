@@ -6,13 +6,7 @@ import static com.zkrallah.sanad.response.ApiResponse.createSuccessResponse;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.zkrallah.sanad.dtos.CreateRequestDto;
@@ -96,11 +90,11 @@ public class ClientsController {
 
     @PostMapping("/request")
     public ResponseEntity<ApiResponse<Request>> createRequest(
-            @RequestParam() Long userId,
+            @RequestHeader("Authorization") String authHeader,
             @RequestParam() Long lawyerId,
             @RequestBody CreateRequestDto createRequestDto) {
         try {
-            Request request = requestService.createRequest(userId, lawyerId, createRequestDto);
+            Request request = requestService.createRequest(authHeader, lawyerId, createRequestDto);
             return ResponseEntity.ok(createSuccessResponse(request));
         } catch (Exception e) {
             return ResponseEntity.badRequest()
@@ -110,10 +104,10 @@ public class ClientsController {
 
     @GetMapping("/requests")
     public ResponseEntity<ApiResponse<List<Request>>> getRequests(
-            @RequestParam Long userId,
+            @RequestHeader("Authorization") String authHeader,
             @RequestParam int type) {
         try {
-            List<Request> requests = requestService.getRequests(userId, type);
+            List<Request> requests = requestService.getRequests(authHeader, type);
             return ResponseEntity.ok(createSuccessResponse(requests));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(createFailureResponse("Could not get requests: " + e.getMessage()));
