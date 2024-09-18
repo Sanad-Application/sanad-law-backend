@@ -1,0 +1,36 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/sanad # The url of the psql database
+    username: postgres # the username used to log in to psql
+    password: # the password of the username
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop # change to `update` if you want to save ur db after terminating the project
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          time_zone: UTC
+    database: postgresql
+  application:
+    security:
+      jwt:
+        secret-key: # your secret key, don't tell anyone ur secrets :)
+        access-token-expiration: 604800000 # access token expires in ...
+        refresh-token-expiration: 2592000000 # refresh token expires in ...
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username:  # your smtp gmail
+    password:  # the password of the smtp gmail
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  server:
+    address: 0.0.0.0
