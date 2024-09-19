@@ -4,20 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.OrderBy;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,6 +28,12 @@ public class Lawyer {
 
     @Column
     private boolean isActive = false;
+
+    @Column
+    private String location;
+
+    @Column
+    private int experienceYears;
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
@@ -71,4 +64,21 @@ public class Lawyer {
     @JoinTable(name = "lawyer_tags", joinColumns = @JoinColumn(name = "lawyer_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
     @OrderBy("id ASC")
     private List<Tag> tags = new ArrayList<>();
+
+    @Transient
+    private double avgRate;
+
+    public double getAvgRate() {
+        if (ratings.isEmpty()) return 0;
+
+        double numRatings = 0.0;
+        double totalRatings = 0.0;
+
+        for (Rating rating : ratings) {
+            numRatings++;
+            totalRatings += rating.getRating();
+        }
+
+        return numRatings / totalRatings;
+    }
 }

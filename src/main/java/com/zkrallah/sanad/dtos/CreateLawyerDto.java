@@ -6,4 +6,6 @@ import lombok.Data;
 public class CreateLawyerDto {
     private String bio;
     private Double hourlyRate;
+    private String location;
+    private int experienceYears;
 }
