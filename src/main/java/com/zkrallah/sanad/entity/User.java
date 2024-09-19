@@ -45,6 +45,7 @@ public class User implements UserDetails {
     @Column(unique = true, nullable = false)
     private String email;
 
+    @JsonIgnore
     @Column(nullable = false)
     private String password;
 
@@ -63,15 +64,18 @@ public class User implements UserDetails {
     @Column
     private Date dob;
 
+    @JsonIgnore
     @Column
     private int code;
 
+    @JsonIgnore
     @Column
     private Timestamp codeExpiredAt;
 
     @Column
     private boolean isEmailVerified;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("id ASC")
     private List<Request> requests = new ArrayList<>();
