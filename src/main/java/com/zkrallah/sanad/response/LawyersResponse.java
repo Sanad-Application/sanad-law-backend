@@ -11,6 +11,9 @@ public class LawyersResponse {
     private double hourlyRate;
     private boolean isActive;
     private User user;
+    private String location;
+    private int experienceYears;
+    private double avgRate;
 
     public static LawyersResponse toLawyersResponse(Lawyer lawyer) {
         if (lawyer == null) {
@@ -23,6 +26,9 @@ public class LawyersResponse {
         response.setHourlyRate(lawyer.getHourlyRate());
         response.setActive(lawyer.isActive());
         response.setUser(lawyer.getUser());
+        response.setExperienceYears(lawyer.getExperienceYears());
+        response.setLocation(lawyer.getLocation());
+        response.setAvgRate(lawyer.getAvgRate());
 
         return response;
     }

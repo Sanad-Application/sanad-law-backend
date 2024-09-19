@@ -39,6 +39,8 @@ public class LawyerServiceImpl implements LawyerService {
         Lawyer lawyer = new Lawyer();
         lawyer.setBio(createLawyerDto.getBio());
         lawyer.setHourlyRate(createLawyerDto.getHourlyRate());
+        lawyer.setExperienceYears(createLawyerDto.getExperienceYears());
+        lawyer.setLocation(createLawyerDto.getLocation());
 
         user.setLawyer(lawyer);
         lawyer.setUser(user);
@@ -108,6 +110,8 @@ public class LawyerServiceImpl implements LawyerService {
 
         lawyer.setBio(createLawyerDto.getBio());
         lawyer.setHourlyRate(createLawyerDto.getHourlyRate());
+        lawyer.setExperienceYears(createLawyerDto.getExperienceYears());
+        lawyer.setLocation(createLawyerDto.getLocation());
 
         return lawyer;
     }
