@@ -5,6 +5,7 @@ import static com.zkrallah.sanad.response.ApiResponse.createSuccessResponse;
 
 import java.util.List;
 
+import com.zkrallah.sanad.response.LawyersResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,9 +43,9 @@ public class ClientsController {
     private final TagService tagService;
 
     @GetMapping("/lawyers")
-    public ResponseEntity<ApiResponse<List<Lawyer>>> getLawyers() {
+    public ResponseEntity<ApiResponse<List<LawyersResponse>>> getLawyers() {
         try {
-            List<Lawyer> lawyers = lawyerService.getLawyers();
+            List<LawyersResponse> lawyers = lawyerService.getLawyers();
             return ResponseEntity.ok(createSuccessResponse(lawyers));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(createFailureResponse("Could not get lawyers: " + e.getMessage()));
@@ -52,10 +53,10 @@ public class ClientsController {
     }
 
     @GetMapping("/lawyers/tag/{tagId}")
-    public ResponseEntity<ApiResponse<List<Lawyer>>> getLawyersByTag(
+    public ResponseEntity<ApiResponse<List<LawyersResponse>>> getLawyersByTag(
             @PathVariable Long tagId) {
         try {
-            List<Lawyer> lawyers = lawyerService.getLawyersByTag(tagId);
+            List<LawyersResponse> lawyers = lawyerService.getLawyersByTag(tagId);
             return ResponseEntity.ok(createSuccessResponse(lawyers));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(createFailureResponse("Could not get lawyers: " + e.getMessage()));
@@ -63,9 +64,9 @@ public class ClientsController {
     }
 
     @GetMapping("lawyers/active")
-    public ResponseEntity<ApiResponse<List<Lawyer>>> getActiveLawyers() {
+    public ResponseEntity<ApiResponse<List<LawyersResponse>>> getActiveLawyers() {
         try {
-            List<Lawyer> lawyers = lawyerService.getActiveLawyers();
+            List<LawyersResponse> lawyers = lawyerService.getActiveLawyers();
             return ResponseEntity.ok(createSuccessResponse(lawyers));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(createFailureResponse("Could not get lawyers: " + e.getMessage()));

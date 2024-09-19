@@ -4,15 +4,16 @@ import java.util.List;
 
 import com.zkrallah.sanad.dtos.CreateLawyerDto;
 import com.zkrallah.sanad.entity.Lawyer;
+import com.zkrallah.sanad.response.LawyersResponse;
 
 public interface LawyerService {
     Lawyer createLawyer(String authHeader, CreateLawyerDto createLawyerDto);
 
-    List<Lawyer> getLawyers();
+    List<LawyersResponse> getLawyers();
 
-    List<Lawyer> getLawyersByTag(Long tagId);
+    List<LawyersResponse> getLawyersByTag(Long tagId);
 
-    List<Lawyer> getActiveLawyers();
+    List<LawyersResponse> getActiveLawyers();
 
     Lawyer getLawyer(Long lawyerId);
 

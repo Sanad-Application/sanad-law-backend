@@ -3,6 +3,7 @@ package com.zkrallah.sanad.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -61,6 +62,7 @@ public class Lawyer {
     @OrderBy("id ASC")
     private List<Rating> ratings = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "lawyer", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("id ASC")
     private List<Request> clientRequests = new ArrayList<>();

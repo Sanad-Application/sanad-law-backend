@@ -1,7 +1,9 @@
 package com.zkrallah.sanad.service.lawyer;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.zkrallah.sanad.response.LawyersResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,8 +47,17 @@ public class LawyerServiceImpl implements LawyerService {
     }
 
     @Override
-    public List<Lawyer> getLawyers() {
-        return lawyerRepository.findAll();
+    public List<LawyersResponse> getLawyers() {
+        List<LawyersResponse> res = new ArrayList<>();
+
+        List<Lawyer> lawyers =  lawyerRepository.findAll();
+
+        for (Lawyer lawyer : lawyers) {
+            LawyersResponse lawyersResponse = LawyersResponse.toLawyersResponse(lawyer);
+            res.add(lawyersResponse);
+        }
+
+        return res;
     }
 
     @Override
@@ -102,10 +113,19 @@ public class LawyerServiceImpl implements LawyerService {
     }
 
     @Override
-    public List<Lawyer> getLawyersByTag(Long tagId) {
+    public List<LawyersResponse> getLawyersByTag(Long tagId) {
+        List<LawyersResponse> res = new ArrayList<>();
+
         Tag tag = tagService.getTagById(tagId);
 
-        return tag.getLawyers();
+        List<Lawyer> lawyers = tag.getLawyers();
+
+        for (Lawyer lawyer : lawyers) {
+            LawyersResponse lawyersResponse = LawyersResponse.toLawyersResponse(lawyer);
+            res.add(lawyersResponse);
+        }
+
+        return res;
     }
 
     @Override
@@ -128,8 +148,17 @@ public class LawyerServiceImpl implements LawyerService {
     }
 
     @Override
-    public List<Lawyer> getActiveLawyers() {
-        return lawyerRepository.findByIsActiveTrue()
+    public List<LawyersResponse> getActiveLawyers() {
+        List<LawyersResponse> res = new ArrayList<>();
+
+        List<Lawyer> lawyers = lawyerRepository.findByIsActiveTrue()
                 .orElseThrow(() -> new RuntimeException("Could not get lawyers."));
+
+        for (Lawyer lawyer : lawyers) {
+            LawyersResponse lawyersResponse = LawyersResponse.toLawyersResponse(lawyer);
+            res.add(lawyersResponse);
+        }
+
+        return res;
     }
 }

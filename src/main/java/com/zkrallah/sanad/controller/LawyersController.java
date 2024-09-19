@@ -42,17 +42,6 @@ public class LawyersController {
     private final ExperienceService experienceService;
     private final RequestService requestService;
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<Lawyer>>> getLawyers() {
-        try {
-            List<Lawyer> lawyers = lawyerService.getLawyers();
-            return ResponseEntity.ok(createSuccessResponse(lawyers));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest()
-                    .body(createFailureResponse("Could get lawyers: " + e.getMessage()));
-        }
-    }
-
     @PostMapping("/create")
     public ResponseEntity<ApiResponse<Lawyer>> createLawyer(
             @RequestHeader("Authorization") String authHeader,
