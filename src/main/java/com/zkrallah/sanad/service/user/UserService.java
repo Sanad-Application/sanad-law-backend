@@ -25,4 +25,6 @@ public interface UserService {
     User updateUser(String authHeader, UpdateUserDto updateUserDto) throws ParseException;
 
     void updateUserPhoto(String authHeader, String url);
+
+    void updateFcmToken(String email, String fcmToken);
 }

@@ -1,9 +1,14 @@
 package com.zkrallah.sanad.config;
 
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.zkrallah.sanad.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -11,6 +16,8 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import java.io.IOException;
 
 @Configuration
 @RequiredArgsConstructor
@@ -41,5 +48,19 @@ public class ApplicationConfig {
         authProvider.setPasswordEncoder(passwordEncoder());
 
         return authProvider;
+    }
+
+    @Bean
+    FirebaseMessaging firebaseMessaging() throws IOException {
+        GoogleCredentials googleCredentials = GoogleCredentials.fromStream(
+                new ClassPathResource("sanad-law-firebase-adminsdk-zxvzw-9100642229.json")
+                        .getInputStream());
+
+        FirebaseOptions firebaseOptions = FirebaseOptions.builder()
+                .setCredentials(googleCredentials).build();
+
+        FirebaseApp app = FirebaseApp.initializeApp(firebaseOptions, "sanad");
+
+        return FirebaseMessaging.getInstance(app);
     }
 }

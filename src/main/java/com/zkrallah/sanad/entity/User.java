@@ -75,6 +75,9 @@ public class User implements UserDetails {
     @Column
     private boolean isEmailVerified;
 
+    @Column
+    private String firebaseToken;
+
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("id ASC")
