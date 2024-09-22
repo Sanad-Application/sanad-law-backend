@@ -39,6 +39,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public LoginResponse login(LoginUserDto loginUserDto) {
         User authenticatedUser = authenticate(loginUserDto);
+        userService.updateFcmToken(loginUserDto.getEmail(), loginUserDto.getFcmToken());
 
         String accessToken = jwtService.generateAccessToken(authenticatedUser);
         String refreshToken = jwtService.generateRefreshToken(authenticatedUser);

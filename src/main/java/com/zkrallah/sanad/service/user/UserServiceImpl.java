@@ -99,4 +99,11 @@ public class UserServiceImpl implements UserService {
         user.setImageUrl(url);
         log.info("Updated on {}", Thread.currentThread().getName());
     }
+
+    @Override
+    @Transactional
+    public void updateFcmToken(String email, String fcmToken) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("user not found"));
+        user.setFirebaseToken(fcmToken);
+    }
 }

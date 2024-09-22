@@ -5,6 +5,8 @@ import static com.zkrallah.sanad.response.ApiResponse.createSuccessResponse;
 
 import java.util.List;
 
+import com.zkrallah.sanad.entity.Message;
+import com.zkrallah.sanad.service.chat.ChatService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -35,6 +37,7 @@ public class UsersController {
 
     private final UserService userService;
     private final StorageService storageService;
+    private final ChatService chatService;
 
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<User>> getMe(
@@ -86,6 +89,19 @@ public class UsersController {
         } catch (Exception e) {
             return ResponseEntity.badRequest()
                     .body(createFailureResponse("Could not upload user's image: " + e.getMessage()));
+        }
+    }
+
+    @GetMapping("/chat")
+    public ResponseEntity<ApiResponse<List<Message>>> getMessages(
+            @RequestParam("room") String room
+    ) {
+        try {
+            List<Message> messages = chatService.getMessages(room);
+            return ResponseEntity.ok(createSuccessResponse(messages));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(createFailureResponse("Could not get chat: " + e.getMessage()));
         }
     }
 }
