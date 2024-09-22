@@ -2,7 +2,8 @@ package com.zkrallah.sanad.service.socket;
 
 import com.corundumstudio.socketio.SocketIOServer;
 import com.zkrallah.sanad.entity.User;
-import com.zkrallah.sanad.model.Message;
+import com.zkrallah.sanad.dtos.MessageDto;
+import com.zkrallah.sanad.service.chat.ChatService;
 import com.zkrallah.sanad.service.messaging.FirebaseMessagingService;
 import com.zkrallah.sanad.service.user.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -18,11 +19,14 @@ public class SocketIOServiceImpl implements SocketIOService{
     private final UserService userService;
     @Autowired
     private final FirebaseMessagingService firebaseMessagingService;
+    @Autowired
+    private final ChatService chatService;
 
-    public SocketIOServiceImpl(SocketIOServer server, UserService userService, FirebaseMessagingService firebaseMessagingService) {
+    public SocketIOServiceImpl(SocketIOServer server, UserService userService, FirebaseMessagingService firebaseMessagingService, ChatService chatService) {
         this.server = server;
         this.userService = userService;
         this.firebaseMessagingService = firebaseMessagingService;
+        this.chatService = chatService;
         init();
     }
 
@@ -34,11 +38,19 @@ public class SocketIOServiceImpl implements SocketIOService{
             log.info("{} joined {}", client, room);
         });
 
-        server.addEventListener("sendMessage", Message.class, (client, message, ackSender) -> {
+        server.addEventListener("sendMessage", MessageDto.class, (client, message, ackSender) -> {
             String room = message.getRoom();
-            User receiver = userService.getUserById(message.getReceiverId());
-            String token = receiver.getFirebaseToken();
-            firebaseMessagingService.sendNotificationByToken(token, message);
+
+            try {
+                User receiver = userService.getUserById(message.getReceiverId());
+                String token = receiver.getFirebaseToken();
+                firebaseMessagingService.sendNotificationByToken(token, message);
+            } catch (Exception ex) {
+                log.error("Could not send notification: {}", ex.getMessage());
+            }
+
+            chatService.saveMessage(message);
+
             server.getRoomOperations(room).sendEvent("newMessage", message);
         });
 

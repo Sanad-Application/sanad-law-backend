@@ -1,4 +1,4 @@
-package com.zkrallah.sanad.model;
+package com.zkrallah.sanad.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Message {
+public class MessageDto {
     private String room;
     private String content;
     private Long senderId;

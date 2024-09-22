@@ -4,6 +4,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
+import com.zkrallah.sanad.dtos.MessageDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,7 @@ public class FirebaseMessagingServiceImpl implements FirebaseMessagingService{
     private FirebaseMessaging firebaseMessaging;
 
     @Override
-    public String sendNotificationByToken(String token, com.zkrallah.sanad.model.Message msg) {
+    public String sendNotificationByToken(String token, MessageDto msg) {
         Notification notification = Notification.builder()
                 .setTitle("New Message")
                 .setBody(msg.getContent())
@@ -30,8 +31,7 @@ public class FirebaseMessagingServiceImpl implements FirebaseMessagingService{
                 .build();
 
         try {
-            firebaseMessaging.send(message);
-            return "success";
+            return firebaseMessaging.send(message);
         } catch (FirebaseMessagingException ex) {
             return "failure";
         }
