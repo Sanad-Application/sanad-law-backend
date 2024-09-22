@@ -8,7 +8,7 @@ import java.util.List;
 public class CreateRequestDto {
     private Long id;
     private String type;
-    private String tag;
+    private Long tagId;
     private String title;
     private String description;
     private String attachment;
