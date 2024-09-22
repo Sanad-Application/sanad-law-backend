@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.zkrallah.sanad.entity.Tag;
+import com.zkrallah.sanad.service.tag.TagService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,18 +29,19 @@ public class RequestServiceImpl implements RequestService {
     private final RequestRepository requestRepository;
     private final UserService userService;
     private final LawyerService lawyerService;
+    private final TagService tagService;
 
     @Override
     @Transactional
     public Request createRequest(String authHeader, Long lawyerId, CreateRequestDto createRequestDto) {
         User user = userService.getUserByJwt(authHeader);
         Lawyer lawyer = lawyerService.getLawyer(lawyerId);
+        Tag tag = tagService.getTagById(createRequestDto.getTagId());
 
         Request request = new Request();
         Date now = new Date();
 
         request.setType(createRequestDto.getType());
-        request.setTag(createRequestDto.getTag());
         request.setTitle(createRequestDto.getTitle());
         request.setDescription(createRequestDto.getDescription());
         request.setKeywords(createRequestDto.getKeywords());
@@ -48,6 +51,7 @@ public class RequestServiceImpl implements RequestService {
 
         request.setLawyer(lawyer);
         request.setUser(user);
+        request.setTag(tag);
 
         return requestRepository.save(request);
     }

@@ -25,9 +25,6 @@ public class Request {
     private String type;
 
     @Column(nullable = false)
-    private String tag;
-
-    @Column(nullable = false)
     private String title;
 
     @Column(columnDefinition = "TEXT", nullable = false)
@@ -46,6 +43,10 @@ public class Request {
     @CollectionTable(name = "request_keywords", joinColumns = @JoinColumn(name = "request_id"))
     @Column(name = "keyword")
     private List<String> keywords;
+
+    @ManyToOne
+    @JoinColumn(name = "tag_id", referencedColumnName = "id")
+    private Tag tag;
 
     @JsonIgnore
     @ManyToOne
