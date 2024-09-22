@@ -15,7 +15,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "chats")
+@Table(name = "chats", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"user1Id", "user2Id"})
+})
 public class Chat {
 
     @Id
@@ -24,6 +26,12 @@ public class Chat {
 
     @Column(nullable = false)
     private String room;
+
+    @Column(nullable = false)
+    private Long user1Id;
+
+    @Column(nullable = false)
+    private Long user2Id;
 
     @JsonIgnore
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, orphanRemoval = true)

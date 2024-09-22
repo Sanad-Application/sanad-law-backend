@@ -6,6 +6,7 @@ import static com.zkrallah.sanad.response.ApiResponse.createSuccessResponse;
 import java.util.List;
 
 import com.zkrallah.sanad.entity.Message;
+import com.zkrallah.sanad.response.ChatResponse;
 import com.zkrallah.sanad.service.chat.ChatService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -102,6 +103,19 @@ public class UsersController {
         } catch (Exception e) {
             return ResponseEntity.badRequest()
                     .body(createFailureResponse("Could not get chat: " + e.getMessage()));
+        }
+    }
+
+    @GetMapping("/chats")
+    public ResponseEntity<ApiResponse<List<ChatResponse>>> getChats(
+            @RequestHeader("Authorization") String authHeader
+    ) {
+        try {
+            List<ChatResponse> chatResponses = chatService.getChatsForUser(authHeader);
+            return ResponseEntity.ok(createSuccessResponse(chatResponses));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(createFailureResponse("Could not get chats: " + e.getMessage()));
         }
     }
 }
