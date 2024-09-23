@@ -8,6 +8,8 @@ This project is built with : <br> <br>
 • Spring-MVC <br>
 • PostgreSQL <br>
 • Spring JPA <br>
+• Socket.io <br>
+• Firebase Cloud Messaging <br>
 • Spring Security for JWT and stateless authentication and middleware filters <br>
 • Firebase Storage for cloud storage <br>
 • @Async and CompletableFuture for asynchronous processing <br>
@@ -15,7 +17,7 @@ This project is built with : <br> <br>
 ## Database design
 You can also view it from this [Database Design Link](https://drawsql.app/teams/zkrallah/diagrams/gaeedy "Database Design Link") <br>
 
-![drawSQL-image-export-2024-09-18](https://github.com/user-attachments/assets/702dd64a-9278-430f-96cf-9cbae724d759)
+![drawSQL-image-export-2024-09-23](https://github.com/user-attachments/assets/8a066e86-49a9-4d59-a4bb-84cc779b6a94)
 
 ## Installation
 
@@ -45,6 +47,12 @@ Once you have downloaded the JSON file: <br>
 That's it, now you are good to go! Run the project in Intellij or you can run this command in the root directory if you have maven installed on your machine:
 ```bash
 mvn spring-boot:run
+```
+
+## Unit testing
+You can run the unit tests by running the following command on you machine if you have maven installed:
+```bash
+mvn test
 ```
 
 ## Endpoints and examples
