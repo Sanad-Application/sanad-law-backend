@@ -61,7 +61,21 @@ public class Request {
     @Transient
     private String lawyerName;
 
+    @Transient
+    private Long userId;
+
+    @Transient
+    private String userName;
+
     public String getLawyerName() {
         return lawyer.getUser().getFirstName() + lawyer.getUser().getLastName();
+    }
+
+    public Long getUserId() {
+        return user.getId();
+    }
+
+    public String getUserName() {
+        return user.getFirstName() + user.getLastName();
     }
 }
