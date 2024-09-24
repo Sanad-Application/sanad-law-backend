@@ -68,7 +68,7 @@ public class Request {
     private String userName;
 
     public String getLawyerName() {
-        return lawyer.getUser().getFirstName() + lawyer.getUser().getLastName();
+        return lawyer.getUser().getFirstName() + " " + lawyer.getUser().getLastName();
     }
 
     public Long getUserId() {

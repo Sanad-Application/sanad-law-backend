@@ -64,7 +64,7 @@ public class LawyerServiceImpl implements LawyerService {
 
     @Override
     @Transactional
-    public void addTagToLawyer(String authHeader, String tagName) {
+    public void addTagToLawyer(String authHeader, Long tagId) {
         User user = userService.getUserByJwt(authHeader);
         Lawyer lawyer = user.getLawyer();
 
@@ -72,7 +72,7 @@ public class LawyerServiceImpl implements LawyerService {
             throw new IllegalArgumentException("User is not a lawyer.");
         }
 
-        Tag tag = tagService.getTagByName(tagName);
+        Tag tag = tagService.getTagById(tagId);
         if (lawyer.getTags().contains(tag)) {
             throw new IllegalArgumentException("Tag already exists.");
         }
@@ -82,7 +82,7 @@ public class LawyerServiceImpl implements LawyerService {
 
     @Override
     @Transactional
-    public void removeTagFromLawyer(String authHeader, String tagName) {
+    public void removeTagFromLawyer(String authHeader, Long tagId) {
         User user = userService.getUserByJwt(authHeader);
         Lawyer lawyer = user.getLawyer();
 
@@ -90,7 +90,7 @@ public class LawyerServiceImpl implements LawyerService {
             throw new IllegalArgumentException("User is not a lawyer.");
         }
 
-        Tag tag = tagService.getTagByName(tagName);
+        Tag tag = tagService.getTagById(tagId);
         if (!lawyer.getTags().contains(tag)) {
             throw new IllegalArgumentException("Tag already doesn't exist.");
         }

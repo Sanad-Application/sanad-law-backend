@@ -65,7 +65,7 @@ public class ChatServiceImpl implements ChatService {
         for (Chat chat : chats) {
             Long otherUserId = chat.getUser1Id().equals(userId) ? chat.getUser2Id() : chat.getUser1Id();
             User otherUser = userService.getUserById(otherUserId);
-            String otherUserName = otherUser.getFirstName() + otherUser.getLastName();
+            String otherUserName = otherUser.getFirstName() + " " + otherUser.getLastName();
             chatResponses.add(new ChatResponse(chat, otherUserName));
         }
 
