@@ -17,9 +17,9 @@ public interface LawyerService {
 
     Lawyer getLawyer(Long lawyerId);
 
-    void addTagToLawyer(String authHeader, String tagName);
+    void addTagToLawyer(String authHeader, Long tagId);
 
-    void removeTagFromLawyer(String authHeader, String tagName);
+    void removeTagFromLawyer(String authHeader, Long tagId);
 
     Lawyer updateLawyer(String authHeader, CreateLawyerDto createLawyerDto);
 

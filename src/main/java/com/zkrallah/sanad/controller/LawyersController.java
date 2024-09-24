@@ -194,9 +194,9 @@ public class LawyersController {
     @PatchMapping("/tag")
     public ResponseEntity<ApiResponse<MessageResponse>> addTag(
             @RequestHeader("Authorization") String authHeader,
-            @RequestBody CreateTagDto createTagDto) {
+            @RequestParam("tagId") Long tagId) {
         try {
-            lawyerService.addTagToLawyer(authHeader, createTagDto.getName());
+            lawyerService.addTagToLawyer(authHeader, tagId);
             return ResponseEntity.ok(createSuccessResponse(new MessageResponse("Tag added successfully!")));
         } catch (Exception e) {
             return ResponseEntity.badRequest()
@@ -207,9 +207,9 @@ public class LawyersController {
     @PatchMapping("/untag")
     public ResponseEntity<ApiResponse<MessageResponse>> removeTag(
             @RequestHeader("Authorization") String authHeader,
-            @RequestBody CreateTagDto createTagDto) {
+            @RequestParam("tagId") Long tagId) {
         try {
-            lawyerService.removeTagFromLawyer(authHeader, createTagDto.getName());
+            lawyerService.removeTagFromLawyer(authHeader, tagId);
             return ResponseEntity.ok(createSuccessResponse(new MessageResponse("Tag removed successfully!")));
         } catch (Exception e) {
             return ResponseEntity.badRequest()
